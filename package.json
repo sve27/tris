@@ -1,0 +1,12 @@
+{
+  "name": "tris",
+  "version": "1.0.0",
+  "description": "Gioco Tris Online con WebSocket",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}
