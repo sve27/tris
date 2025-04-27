@@ -2,30 +2,136 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tris Online</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(3, 100px); gap: 5px; margin: 20px auto; }
+        /* Font e background generali */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f4f8;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #0077b6;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        /* Stile per i pulsanti */
+        button {
+            background-color: #0077b6;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0096c7;
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Layout del form di input */
+        .input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            outline: none;
+            width: 180px;
+        }
+
+        input:focus {
+            border-color: #0077b6;
+        }
+
+        /* Tabellone di gioco */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            gap: 5px;
+            margin: 20px auto;
+            justify-items: center;
+        }
+
         .cell {
-            width: 100px; height: 100px;
-            border: 1px solid #000;
-            font-size: 32px;
+            width: 100px;
+            height: 100px;
+            border: 2px solid #0077b6;
+            font-size: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #e0f7fa;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
+
+        .cell:hover {
+            background-color: #80deea;
+        }
+
+        /* Indicatori di turno e stato */
+        #status, #turn-indicator {
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+
+        /* Animazioni */
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
     </style>
 </head>
 <body>
-    <h1>Tris Online</h1>
-    <input type="text" id="playerName" placeholder="Il tuo nome">
-    <input type="text" id="lobbyName" placeholder="Nome della lobby">
-    <button id="createLobbyBtn">Crea Lobby</button>
-    <button id="joinLobbyBtn">Unisciti alla Lobby</button>
-    <button id="startGameBtn">Avvia Partita</button>
-    <p id="status">In attesa...</p>
-    <p id="turn-indicator">Turno di: -</p>
+    <h1 class="fade-in">Tris Online</h1>
+    
+    <div class="input-container fade-in">
+        <input type="text" id="playerName" placeholder="Il tuo nome">
+        <input type="text" id="lobbyName" placeholder="Nome della lobby">
+    </div>
+    
+    <div class="fade-in">
+        <button id="createLobbyBtn">Crea Lobby</button>
+        <button id="joinLobbyBtn">Unisciti alla Lobby</button>
+        <button id="startGameBtn" disabled>Avvia Partita</button>
+    </div>
+
+    <p id="status" class="fade-in">In attesa...</p>
+    <p id="turn-indicator" class="fade-in">Turno di: -</p>
+
     <div class="grid" id="board">
         ${Array(9).fill(0).map((_, i) => `<div class="cell" id="cell-${i}"></div>`).join('')}
     </div>
@@ -49,6 +155,7 @@
                 currentTurn = data.turn || 'X';
                 updateBoard();
                 document.getElementById('status').innerText = `Sei ${data.name || 'Giocatore'} (${playerSymbol})`;
+                document.getElementById('startGameBtn').disabled = false;
                 break;
 
             case 'player_joined':
